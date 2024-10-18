@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "495523250738",
+    "project_id": "hillfair2k24",
+    "storage_bucket": "hillfair2k24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495523250738:android:7703a69cf3922b7972722b",
+        "android_client_info": {
+          "package_name": "com.example.hillfair"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBShegb3FcwoF_OgJTt7R7XrlwI743sVNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
