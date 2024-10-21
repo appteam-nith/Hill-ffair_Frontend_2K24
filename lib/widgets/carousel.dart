@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:hillfair/screens/models.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Carousel extends StatefulWidget {
   @override
@@ -7,14 +10,39 @@ class Carousel extends StatefulWidget {
 }
 
 class _CarouselState extends State<Carousel> {
-  final List<String> images = [
-    'https://picsum.photos/id/1041/200/300',
-    'https://picsum.photos/id/1003/200/300',
-    'https://picsum.photos/id/1025/200/300',
-    'https://picsum.photos/id/106/200/300',
-    'https://picsum.photos/id/1015/200/300',
-    'https://picsum.photos/id/1001/200/300'
-  ];
+  List<String> urls = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchImagesAndStoreInLists();
+  }
+
+  Future<void> fetchImagesAndStoreInLists() async {
+    var dio = Dio();
+
+    try {
+      var response = await dio.get(
+          'https://hillffair-backend-2k24.onrender.com/highlight/highlights');
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        for (var json in data) {
+          HighlightImage image = HighlightImage.fromJson(json);
+          urls.add(image.url);
+        }
+      } else {
+        print("Error: Unable to fetch data.");
+      }
+    } catch (e) {
+      print("Error: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   int _currentIndex = 0;
   final CarouselSliderController carouselController =
       CarouselSliderController();
@@ -25,49 +53,74 @@ class _CarouselState extends State<Carousel> {
 
     return Column(
       children: [
-        CarouselSlider(
-          carouselController: carouselController,
-          options: CarouselOptions(
-            height: 270.0,
-            autoPlay: true,
-            enlargeCenterPage: true,
-            aspectRatio: 16 / 9,
-            enableInfiniteScroll: true,
-            viewportFraction: 1.0,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-          ),
-          items: images.map((url) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Container(
-                  width: size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 10),
+        isLoading
+            ? Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: size.width * 0.9,
+                  height: 270,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                    child: Image.network(
-                      url,
-                      fit: BoxFit.contain,
-                      width: size.width,
-                      height: 270.0,
-                    ),
-                  ),
-                );
-              },
-            );
-          }).toList(),
-        ),
+                ),
+              )
+            : CarouselSlider(
+                carouselController: carouselController,
+                options: CarouselOptions(
+                  height: 270.0,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  aspectRatio: 16 / 9,
+                  enableInfiniteScroll: true,
+                  viewportFraction: 1.0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                ),
+                items: urls.map((url) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Container(
+                          width: size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.network(
+                                url,
+                                fit: BoxFit.cover,
+                                width: size.width,
+                                height: 270.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
         SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: images.asMap().entries.map((entry) {
+          children: urls.asMap().entries.map((entry) {
             return GestureDetector(
               onTap: () => carouselController.animateToPage(entry.key),
               child: Container(

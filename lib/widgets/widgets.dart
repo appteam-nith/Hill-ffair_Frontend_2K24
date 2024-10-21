@@ -1,6 +1,10 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
@@ -175,59 +179,64 @@ Widget buildTextField({
   required IconData icon,
   required TextEditingController controller,
   FormFieldValidator<String>? validator,
+  double? width,
   bool isPassword = false,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 0),
-      child: SizedBox(
-        height: 60,
-        width: 360,
-        child: TextFormField(
-          cursorColor: Colors.black,
-          cursorWidth: 2.0,
-          validator: validator,
-          obscureText: isPassword,
-          onTap: () {},
-          enableInteractiveSelection: true,
-          controller: controller,
-          decoration: InputDecoration(
-            prefixIcon: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                icon,
-                size: 40,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
+    child: SizedBox(
+      height: 65,
+      width: width,
+      child: TextFormField(
+        style: TextStyle(
+          fontSize: 18, // Increase font size
+          fontWeight: FontWeight.w500, // Font weight (Medium)
+          color: Colors.black87, // Text color
+          fontFamily: 'Roboto', // Custom font family (Add font to pubspec.yaml)
+        ),
+        cursorColor: Colors.black,
+        cursorWidth: 2.0,
+        validator: validator,
+        obscureText: isPassword,
+        onTap: () {},
+        enableInteractiveSelection: true,
+        controller: controller,
+        decoration: InputDecoration(
+          prefixIcon: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              icon,
+              size: 40,
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
-            labelText: label,
-            floatingLabelStyle: const TextStyle(
-              color: Colors.black,
+          ),
+          labelText: label,
+          floatingLabelStyle: const TextStyle(
+            color: Colors.black,
+          ),
+          labelStyle:
+              TextStyle(fontSize: 20, color: Colors.black.withOpacity(0.8)),
+          contentPadding:
+              EdgeInsets.symmetric(vertical: 25.0, horizontal: 12.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(7),
+            borderSide: BorderSide(
+              width: 3.0,
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
-            labelStyle: TextStyle(fontSize: 20),
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 25.0, horizontal: 12.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(7),
-              borderSide: BorderSide(
-                width: 1.5,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(7),
+            borderSide: BorderSide(
+              width: 2.0,
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(7),
-              borderSide: BorderSide(
-                width: 1.5,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(7),
-              borderSide: BorderSide(
-                width: 1.5,
-                color: Color.fromARGB(255, 0, 0, 0),
-              ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(7),
+            borderSide: BorderSide(
+              width: 2.0,
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
           ),
         ),
@@ -465,5 +474,42 @@ Widget customForHome3(BuildContext context, String image, String text) {
         ),
       )
     ],
+  );
+}
+
+Widget option(VoidCallback ontap, double? width) {
+  return GestureDetector(
+    onTap: ontap,
+    child: SizedBox(
+      height: 51,
+      width: width,
+      child: Container(
+        height: 100, // Adjust as needed
+        width: 300, // Adjust as needed
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff1075CC).withOpacity(0.5), // Blue on the left
+              Color.fromARGB(255, 255, 240, 240)
+                  .withOpacity(0.5), // White in the center
+              Color(0xff1075CC).withOpacity(0.5), // Blue on the right
+            ],
+            stops: [0.0, 0.4, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(
+              50), // Adjust radius to get the rounded ends
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromARGB(255, 169, 160, 160),
+              blurRadius: 10.0,
+              spreadRadius: 2.0,
+              offset: Offset(0, 2), // Adjust for shadow effect
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }
