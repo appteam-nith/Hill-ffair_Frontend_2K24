@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart'; // Import Dio
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hillfair/screens/mesage_page_list.dart';
+import 'package:hillfair/screens/time_screen.dart';
+import 'package:hillfair/widgets/custom_route.dart';
 
 class UserService {
   final Dio dio = Dio();
@@ -262,6 +265,8 @@ class QuizPageState extends State<QuizPage> {
                       ElevatedButton(
                         onPressed: () {
                           _submitQuiz();
+                          Navigator.push(
+                              context, createFadeRoute(ClockScreen()));
                         }, // Call the submission function
                         child: Text("Submit Quiz"),
                       ),
