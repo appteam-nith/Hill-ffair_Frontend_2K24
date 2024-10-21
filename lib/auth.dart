@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 //for signup
@@ -6,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 Future<String> signupUserByEmailAndPassword(
     {required String email,
     required String password,
-    required String name}) async {
+    required String name, String? gender, DateTime? DOB}) async {
   String res = "Empty fields are not allowed";
   try {
     if (email.isNotEmpty || password.isNotEmpty || name.isNotEmpty) {
@@ -58,6 +59,40 @@ Future<String> logoutUser() async {
 
 //for email verification
 
+Future<String?> getFirebaseToken() async {
+  User? users = FirebaseAuth.instance.currentUser;
+  try {
+    if (users != null) {
+      String? token = await users.getIdToken();
+      return token;
+    }
+  } catch (e) {
+    return e.toString();
+  }
+  return null;
+}
 
+class TokenService {
+  final Dio dio;
 
+  TokenService(this.dio);
 
+  Future<void> sendTokenToBackend(String token) async {
+    try {
+      final response = await dio.post(
+        '',
+        data: {'token': token},
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+      if (response.statusCode == 200) {
+        print('Token sent successfully');
+      } else {
+        print('Failed to send token: ${response.data}');
+      }
+    } catch (e) {
+      print('Error sending token: $e');
+    }
+  }
+}

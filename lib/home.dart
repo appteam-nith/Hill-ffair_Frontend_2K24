@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hillfair/screens/home_page.dart';
@@ -13,14 +14,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final List<Widget> screens = [
-    Center(child: HomePage()),
-    Center(child: MatchPage()),
+    HomePage(),
+    MatchPage(),
     Center(
-        child: Center(
-            child: Text(
-      "Games Section",
-      style: TextStyle(fontSize: 30),
-    ))),
+      child: Text(
+        "Games Section",
+        style: TextStyle(fontSize: 30),
+      ),
+    ),
   ];
 
   int _selectedIndex = 0;
@@ -34,40 +35,34 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: ClipRRect(
-        borderRadius:
-            BorderRadius.vertical(top: Radius.circular(20)), // Rounded edges
-        child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            color: Colors.white,
+      body: Stack(
+        children: [
+          // Main content
+          screens[_selectedIndex],
+          // Bottom Navigation Bar
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: CurvedNavigationBar(
+              items: const <Widget>[
+                Icon(Icons.home),
+                Icon(Icons.business),
+                Icon(Icons.videogame_asset),
+              ],
+              index: _selectedIndex,
+              backgroundColor:
+                  Colors.transparent, // Make background transparent
+              color: Color(0xffF3CBB6), // Navigation bar color
+              buttonBackgroundColor:
+                  const Color.fromARGB(255, 255, 255, 255), // Button color
+              onTap: _onItemTapped,
+              height: 60,
+              animationCurve: Curves.fastEaseInToSlowEaseOut,
+            ),
           ),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.business),
-                label: 'Matches',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.videogame_asset),
-                label: 'Game',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            selectedItemColor: Color(0xff008CFF),
-            unselectedItemColor: Colors.black,
-            showUnselectedLabels: true,
-            iconSize: 30,
-            onTap: _onItemTapped,
-          ),
-        ),
+        ],
       ),
-      body: screens[_selectedIndex],
     );
   }
 }

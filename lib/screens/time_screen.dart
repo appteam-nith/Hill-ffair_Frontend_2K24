@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hillfair/home.dart';
 import 'package:hillfair/screens/mesage_page_list.dart';
+import 'package:hillfair/widgets/custom_route.dart';
 
 import 'dart:async';
 import 'package:intl/intl.dart'; // For formatting time
@@ -36,13 +38,14 @@ class _ClockScreenState extends State<ClockScreen> {
   // Initialize the list of target times (for example, 5 PM and 8 PM)
   void _initializeTargetTimes() {
     DateTime now = DateTime.now();
-    
+
     // Example target times (5 PM and 8 PM)
     _targetTimes.add(DateTime(now.year, now.month, now.day, 11, 0, 0)); // 5 PM
     _targetTimes.add(DateTime(now.year, now.month, now.day, 20, 0, 0)); // 8 PM
 
     // Find the next target time after current time
-    _nextTargetTime = _targetTimes.firstWhere((time) => time.isAfter(now), orElse: () => _targetTimes.last);
+    _nextTargetTime = _targetTimes.firstWhere((time) => time.isAfter(now),
+        orElse: () => _targetTimes.last);
     _updateRemainingTime();
   }
 
@@ -96,17 +99,21 @@ class _ClockScreenState extends State<ClockScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFFCD866D),
         elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.white),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(context, createFadeRoute(Home()));
+            },
+            icon: Icon(Icons.arrow_back)),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: screenwidth * 0.02),
             child: IconButton(
               icon: Icon(Icons.message_outlined, color: Colors.white),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MessageListPage()),
-                );
+                // Navigator.push(
+                //   context,
+                //   createFadeRoute(MessageListPage()),
+                // );
               },
             ),
           ),

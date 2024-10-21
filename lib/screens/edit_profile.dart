@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -39,8 +40,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final screenheight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: Text(
+          'Edit Profile',
+          style: GoogleFonts.inriaSans(fontSize: 25),
+        
+        ),
+        
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenwidth * 0.08),
@@ -52,10 +59,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Stack(
               children: [
                 CircleAvatar(
-                  radius: screenwidth * 0.15,
+                  radius: screenwidth * 0.20,
                   backgroundImage: _image != null
                       ? FileImage(_image!) // If image is selected, show it
-                      : AssetImage('assets/image.png')
+                      : AssetImage('assets/images/Android Large - 99 (5).png')
                           as ImageProvider, // Default placeholder
                 ),
                 Positioned(
@@ -64,10 +71,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   child: GestureDetector(
                     onTap: _pickImage,
                     child: CircleAvatar(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                       radius: screenwidth * 0.05,
                       child: Icon(
-                        Icons.edit,
+                        Icons.camera_enhance,
                         color: Colors.white,
                         size: screenwidth * 0.05,
                       ),
@@ -76,7 +83,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: screenheight * 0.04),
+            SizedBox(height: screenheight * 0.06),
 
             // First Name Field
             TextField(
@@ -86,7 +93,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: screenheight * 0.02),
+            SizedBox(height: screenheight * 0.04),
 
             // Last Name Field
             TextField(
@@ -96,7 +103,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: screenheight * 0.02),
+            SizedBox(height: screenheight * 0.04),
 
             // Username Field
             TextField(
