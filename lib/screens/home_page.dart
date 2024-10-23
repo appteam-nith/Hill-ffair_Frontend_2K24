@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hillfair/auth.dart';
+import 'package:hillfair/functions/functions.dart';
 import 'package:hillfair/screens/chat_page.dart';
 import 'package:hillfair/screens/edit_profile.dart';
+import 'package:hillfair/screens/help.dart';
 import 'package:hillfair/screens/login_screen.dart';
+import 'package:hillfair/screens/privacyPolicy.dart';
 import 'package:hillfair/widgets/custom_route.dart';
 import 'package:hillfair/widgets/events.dart';
 import 'package:hillfair/widgets/snack_bar.dart';
 import 'package:hillfair/widgets/widgets.dart';
 import 'package:hillfair/widgets/carousel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +24,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String? email;
+  String? name;
+  String? gender;
+  String? image;
+
+  @override
+  void initState() {
+    super.initState();
+    setInitialValues(context);
+  }
+
+  void setInitialValues(BuildContext context) async {
+    // Fetching the data asynchronously
+    String? fetchedMongoDbUserId = await firebaseId.getMongoDbUserId();
+    String? fetchedEmail = await firebaseId.getEmail();
+    String? fetchedUsername = await firebaseId.getUsername();
+    String? fetchedGender = await firebaseId.getGender();
+
+
+    setState(() {
+      email = fetchedEmail ?? 'No email available'; 
+      gender = fetchedGender ?? 'unknown'; 
+      name = fetchedUsername ?? 'Guest'; 
+
+      
+      if (gender == "male") {
+        image = "assets/images/375139.png";
+      } else if (gender == "female") {
+        image = "assets/images/375571.png"; 
+      } else {
+        image = "...."; 
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -57,81 +97,104 @@ class _HomePageState extends State<HomePage> {
       drawer: SizedBox(
         height: size.height,
         child: Drawer(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
+              // Increased height of DrawerHeader using MediaQuery
               SizedBox(
-                height: 300,
+                height: size.height * 0.35, // Adjust to 45% of screen height
                 child: DrawerHeader(
-                  decoration: BoxDecoration(),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(
+                        255, 221, 227, 236), // Optional background color
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start, // Center everything horizontally
+                    mainAxisAlignment: MainAxisAlignment
+                        .center, // Center everything vertically
                     children: [
                       CircleAvatar(
-                        radius: 75,
-                        backgroundColor:
-                            const Color.fromARGB(255, 255, 255, 255),
+                        radius: 70, // Avatar size remains the same
+                        backgroundColor: const Color.fromARGB(255, 14, 0, 0),
                         child: ClipOval(
                           child: Image.asset(
-                            'assets/images/bg_image_1.png',
+                            image ?? "loading",
                             fit: BoxFit.cover,
-                            width: 140,
-                            height: 140,
+                            width:
+                                120, // Same as avatar radius to maintain proportions
+                            height:
+                                120, // Matches avatar radius for even scaling
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'User Name',
+                      const SizedBox(height: 15),
+                      const SizedBox(height: 15),
+                      Text(
+                        name ?? 'Loading...',
                         style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600),
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      const Text(
-                        'username@example.com',
+                      Text(
+                        email ?? 'Loading...',
                         style: TextStyle(
-                          color: Color.fromARGB(179, 0, 0, 0),
+                          color: Colors.black54,
                           fontSize: 16,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 50),
+
+              // Additional space between the header and menu items
+
+              // ListTiles for menu items
               ListTile(
-                trailing: GestureDetector(
-                    onTap: () => {}, child: Icon(Icons.keyboard_arrow_right)),
+                trailing: Icon(Icons.keyboard_arrow_right),
                 title: Text(
                   "Edit Profile",
                   style: GoogleFonts.roboto(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                      context, createFadeRoute(EditProfilePage())); // Navigate
+                },
               ),
               ListTile(
-                trailing: GestureDetector(
-                    onTap: () => {
-                          Navigator.push(
-                              context, createFadeRoute(EditProfilePage()))
-                        },
-                    child: Icon(Icons.keyboard_arrow_right)),
+                trailing: Icon(Icons.keyboard_arrow_right),
                 title: Text(
                   "Privacy",
                   style: GoogleFonts.roboto(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(
+                      context, createFadeRoute(LegalPrivacyPage())); // Navigate
+                },
               ),
               ListTile(
-                trailing: GestureDetector(
-                    onTap: () => {}, child: Icon(Icons.keyboard_arrow_right)),
+                trailing: Icon(Icons.keyboard_arrow_right),
                 title: Text(
                   "Help",
                   style: GoogleFonts.roboto(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.push(context, createFadeRoute(HelpSupport()));
+                },
               ),
               Divider(),
               ListTile(
@@ -146,7 +209,8 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context); // Close drawer
+                  // Add settings navigation logic
                 },
               ),
               ListTile(
@@ -163,7 +227,9 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black),
                 ),
                 onTap: () {
+                  clearStoredData();
                   logoutUser();
+                  Navigator.pop(context); // Close the drawer
                   Navigator.pushReplacement(
                       context, createFadeRoute(LoginScreen()));
                   showSnackBar(context, "Logged Out Successfully...");
@@ -231,11 +297,49 @@ class _HomePageState extends State<HomePage> {
                   margin: EdgeInsets.symmetric(horizontal: 10),
                   child: customForHome3(
                     context,
-                    'assets/hori 1 (5).png',
+                    'assets/images/hori 1 (4).png',
                     'Chat With Your Favorite',
                   ),
                 ),
                 SizedBox(height: 75),
+                Stack(children: [
+                  SizedBox(
+                      width: size.width,
+                      child: Image.asset('assets/images/Frame 9337 (1).png')),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 30, 30, 0),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconLinkWidget(
+                          iconData: FontAwesomeIcons.instagram,
+                          url:
+                              "https://www.instagram.com/appteam_nith/profilecard/?igsh=MW5rNmRyMjhjbzQ1YQ==",
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconLinkWidget(
+                          iconData: FontAwesomeIcons.linkedin,
+                          url: "https://www.linkedin.com/company/appteam-nith/",
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconLinkWidget(
+                          iconData: FontAwesomeIcons.github,
+                          url: "https://github.com/appteam-nith",
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  )
+                ]),
+                SizedBox(
+                  height: 100,
+                )
               ],
             ),
           ),

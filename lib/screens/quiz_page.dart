@@ -1,18 +1,23 @@
 import 'dart:convert';
-import 'package:dio/dio.dart'; // Import Dio
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hillfair/screens/mesage_page_list.dart';
+import 'package:hillfair/auth.dart';
 import 'package:hillfair/screens/time_screen.dart';
 import 'package:hillfair/widgets/custom_route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/date_symbol_data_custom.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+
+bool quizSubmitted = false;
 
 class UserService {
   final Dio dio = Dio();
   final String baseUrl =
       'https://hillffair-backend-2k24.onrender.com'; // Your base URL
 
-  Future<void> updateUserQuizAnswers(
-      String userId, List<int> quizAnswers) async {
+  Future<void> updateUserQuizAnswers(String userId, List<int> quizAnswers) async {
     String url =
         '$baseUrl/user/updateQuizAnswers/$userId'; // Construct the URL with the userId
 
@@ -32,6 +37,9 @@ class UserService {
 
       // Check if the request was successful
       if (response.statusCode == 200 || response.statusCode == 204) {
+        // Call the submitQuiz function when successful
+        await submitQuiz();
+
         print('Quiz answers updated successfully.');
       } else {
         print(
@@ -63,6 +71,7 @@ class QuizPageState extends State<QuizPage> {
   void initState() {
     super.initState();
     _fetchQuestions();
+    initializeQuizStatus();
   }
 
   Future<void> _fetchQuestions() async {
@@ -122,7 +131,13 @@ class QuizPageState extends State<QuizPage> {
   }
 
   void _selectAnswer(int answerIndex) {
-    selectedAnswers.add(answerIndex);
+    if (questionIndex < questions.length) {
+      if (selectedAnswers.length > questionIndex) {
+        selectedAnswers[questionIndex] = answerIndex;
+      } else {
+        selectedAnswers.add(answerIndex);
+      }
+    }
 
     if (questionIndex < questions.length - 1) {
       setState(() {
@@ -131,16 +146,23 @@ class QuizPageState extends State<QuizPage> {
     }
   }
 
-  // Function to handle the submission of quiz answers
-  void _submitQuiz() async {
+  Future<void> _submitQuiz() async {
+    if (questionIndex == questions.length - 1) {
+      if (selectedAnswers.length <= questionIndex) {
+        _selectAnswer(selectedAnswers.last);
+      }
+    }
+
     UserService userService = UserService();
     await userService.updateUserQuizAnswers(widget.userId, selectedAnswers);
-    // Show a success message or navigate to another page
+
+    // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Quiz submitted successfully!')),
     );
-    // You may want to navigate away after submission
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AnotherPage()));
+
+    // Navigate to another page, e.g., ClockScreen
+    Navigator.pushReplacement(context, createFadeRoute(ClockScreen()));
   }
 
   @override
@@ -155,7 +177,6 @@ class QuizPageState extends State<QuizPage> {
           : questions.isNotEmpty
               ? Column(
                   children: [
-                    // Display the current question
                     Container(
                       height: screenHeight * .4,
                       width: screenWidth,
@@ -188,8 +209,7 @@ class QuizPageState extends State<QuizPage> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: Text(
-                                questions[questionIndex]['questionText'] ??
-                                    'No question available',
+                                questions[questionIndex]['questionText'] ?? 'No question available',
                                 style: TextStyle(
                                   fontSize: screenWidth * 0.05,
                                   fontWeight: FontWeight.bold,
@@ -202,8 +222,6 @@ class QuizPageState extends State<QuizPage> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
-
-                    // Display answer options
                     Column(
                       children: List.generate(
                         4,
@@ -219,21 +237,28 @@ class QuizPageState extends State<QuizPage> {
                             child: Stack(
                               children: [
                                 Container(
-                                  height: screenHeight * 0.06,
-                                  width: screenWidth,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        screenWidth * 0.03),
-                                    color: Colors
-                                        .transparent, // Transparent to show SVG
-                                  ),
-                                ),
-                                SvgPicture.asset(
-                                  'assets/images/Frame 9294.svg',
-                                  width: screenWidth,
-                                  height: screenHeight * 0.06,
-                                  fit: BoxFit.cover,
-                                ),
+                                    height: screenHeight * 0.06,
+                                    width: screenWidth,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xFF1075CC), 
+                                          Color(0xFFE6F3FF), 
+                                          Color(0xFF1075CC), 
+                                        ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(50.0), 
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          spreadRadius: 1,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    )),
                                 Positioned.fill(
                                   child: Align(
                                     alignment: Alignment.centerLeft,
@@ -242,9 +267,7 @@ class QuizPageState extends State<QuizPage> {
                                         horizontal: screenWidth * 0.03,
                                       ),
                                       child: Text(
-                                        questions[questionIndex]['answers']
-                                                [index] ??
-                                            'No option',
+                                        questions[questionIndex]['answers'][index] ?? 'No option',
                                         style: TextStyle(
                                           fontSize: screenWidth * 0.045,
                                         ),
@@ -259,20 +282,46 @@ class QuizPageState extends State<QuizPage> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.05),
-
-                    // Show the "Submit" button if it's the last question
                     if (questionIndex == questions.length - 1)
                       ElevatedButton(
                         onPressed: () {
                           _submitQuiz();
-                          Navigator.push(
-                              context, createFadeRoute(ClockScreen()));
-                        }, // Call the submission function
+                        },
                         child: Text("Submit Quiz"),
                       ),
                   ],
                 )
               : Center(child: Text('No questions available.')),
     );
+  }
+}
+
+Future<void> submitQuiz() async {
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  if (currentUser != null) {
+    String uid = currentUser.uid;
+
+    DocumentReference userQuizRef =
+        FirebaseFirestore.instance.collection('quizSubmissions').doc(uid);
+
+    DocumentSnapshot snapshot = await userQuizRef.get();
+
+    if (!snapshot.exists) {
+      await userQuizRef.set({'status': null});
+    }
+
+    await userQuizRef.update({
+      'status': 'submitted',
+      'submittedAt': FieldValue.serverTimestamp(),
+    });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('quizSubmissionStatus', 'submitted');
+    await prefs.setString('quizSubmissionTime', DateTime.now().toIso8601String());
+
+    print("Quiz submitted successfully and status stored in SharedPreferences!");
+  } else {
+    print("User not logged in!");
   }
 }

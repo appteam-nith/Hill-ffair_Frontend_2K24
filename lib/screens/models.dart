@@ -102,23 +102,23 @@ Future<void> fetchMongoDbUser(String? uid) async {
   }
 }
 
-Future<String?> getUserDatafrompref() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? mongoDbUserId = prefs.getString('mongoDbUserId');
-  String? username = prefs.getString('username');
-  String? email = prefs.getString('email');
-  String? gender = prefs.getString('gender');
-  String? dob = prefs.getString('dob');
+// Future<String?> getUserDatafrompref() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String? mongoDbUserId = prefs.getString('mongoDbUserId');
+//   String? username = prefs.getString('username');
+//   String? email = prefs.getString('email');
+//   String? gender = prefs.getString('gender');
+//   String? dob = prefs.getString('dob');
 
-  print("Retrieved from local storage:");
-  print("MongoDB User ID: $mongoDbUserId");
-  print("Username: $username");
-  print("Email: $email");
-  print("Gender: $gender");
-  print("DOB:$dob");
+//   print("Retrieved from local storage:");
+//   print("MongoDB User ID: $mongoDbUserId");
+//   print("Username: $username");
+//   print("Email: $email");
+//   print("Gender: $gender");
+//   print("DOB:$dob");
 
-  return mongoDbUserId; // Return the MongoDB user ID
-}
+//   return mongoDbUserId; // Return the MongoDB user ID
+// }
 
 // ignore: camel_case_types
 

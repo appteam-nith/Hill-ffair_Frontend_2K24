@@ -12,6 +12,9 @@ class Carousel extends StatefulWidget {
 class _CarouselState extends State<Carousel> {
   List<String> urls = [];
   bool isLoading = true;
+  int _currentIndex = 0;
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
 
   @override
   void initState() {
@@ -27,25 +30,22 @@ class _CarouselState extends State<Carousel> {
           'https://hillffair-backend-2k24.onrender.com/highlight/highlights');
       if (response.statusCode == 200) {
         List<dynamic> data = response.data;
-        for (var json in data) {
-          HighlightImage image = HighlightImage.fromJson(json);
-          urls.add(image.url);
-        }
+        setState(() {
+          urls = data.map((json) => HighlightImage.fromJson(json).url).toList();
+        });
       } else {
         print("Error: Unable to fetch data.");
       }
     } catch (e) {
       print("Error: $e");
     } finally {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-
-  int _currentIndex = 0;
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _CarouselState extends State<Carousel> {
                 ),
               )
             : CarouselSlider(
-                carouselController: carouselController,
+                carouselController: carouselController, // Corrected controller
                 options: CarouselOptions(
                   height: 270.0,
                   autoPlay: true,

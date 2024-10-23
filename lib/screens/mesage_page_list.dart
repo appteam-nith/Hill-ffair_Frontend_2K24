@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart'; // Import Dio for HTTP requests
 import 'package:hillfair/screens/login_screen.dart';
+import 'package:hillfair/screens/signup_screen.dart';
 import 'chat_page.dart';
+
+
+
+
 
 class MessageListPage extends StatefulWidget {
   @override
@@ -36,7 +43,7 @@ class _MessageListPageState extends State<MessageListPage> {
     try {
       // Replace with your backend API endpoint
       final response = await dio.get(
-          'https://appteam-backend-hill-2k24.onrender.com/match/matches-found/67153b6e9223739cd771f926');
+          'https://appteam-backend-hill-2k24.onrender.com/match/matches-found/$mongoDbUserId');
 
       // Assuming the API returns a "matches" list containing "_id" for each user
       setState(() {
