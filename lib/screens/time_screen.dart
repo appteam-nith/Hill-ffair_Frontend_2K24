@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hillfair/home.dart';
 import 'package:hillfair/screens/mesage_page_list.dart';
+import 'package:hillfair/widgets/custom_route.dart';
 import 'dart:async';
 import 'package:intl/intl.dart'; // For formatting time
 
@@ -35,7 +38,7 @@ class _ClockScreenState extends State<ClockScreen> {
   // Initialize the list of target times (for example, 5 PM and 8 PM)
   // void _initializeTargetTimes() {
   //   DateTime now = DateTime.now();
-    
+
   //   // Example target times (5 PM and 8 PM)
   //   _targetTimes.add(DateTime(now.year, now.month, now.day, 11, 0, 0)); // 5 PM
   //   _targetTimes.add(DateTime(now.year, now.month, now.day, 24, 0, 0)); // 8 PM
@@ -91,11 +94,15 @@ class _ClockScreenState extends State<ClockScreen> {
     final screenheight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xFFCEE8FF),
+      backgroundColor: Color(0xff80C0FB),
       appBar: AppBar(
         backgroundColor: Color(0xFF80C0FB),
         elevation: 0,
-        leading: Icon(Icons.arrow_back, color: Colors.white),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(context, createFadeRoute(Home()));
+            },
+            icon: Icon(Icons.arrow_back, color: Colors.white)),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: screenwidth * 0.02),
@@ -115,17 +122,20 @@ class _ClockScreenState extends State<ClockScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenwidth * 0.1),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(
+                height: screenheight * 0.05,
+              ),
               Text(
                 'Be Patient',
                 style: TextStyle(
                   fontSize: screenwidth * 0.08,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: const Color.fromARGB(255, 109, 100, 100),
                 ),
               ),
-              SizedBox(height: screenheight * 0.1),
+              SizedBox(height: screenheight * 0.05),
               Container(
                 padding: EdgeInsets.all(screenwidth * 0.1),
                 decoration: BoxDecoration(
@@ -139,10 +149,8 @@ class _ClockScreenState extends State<ClockScreen> {
                     ),
                   ],
                 ),
-                child:Image.asset('assets/images/Sad.png'),
-                
-                
-                
+                child: Image.asset('assets/images/pngwing.com (1).png'),
+
                 //  Text(
                 //   _formatDuration(_remainingTime),
                 //   style: TextStyle(
@@ -155,13 +163,41 @@ class _ClockScreenState extends State<ClockScreen> {
               SizedBox(height: screenheight * 0.05),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: screenwidth * 0.05),
-                child: Text(
-                  '“Your worth is not defined by someone else’s presence. Love yourself first, and the right connections will follow in time.”',
-                  style: TextStyle(
-                    fontSize: screenwidth * 0.045,
-                    color: Colors.white,
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  children: [
+                    Text(
+                      "Your worth is not defined by ",
+                      style: GoogleFonts.mPlus1(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 255, 255, 255)),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      "By someone else’s presence",
+                      style: GoogleFonts.mPlus1(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 252, 252, 252)),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      "Love yourself first and the right ",
+                      style: GoogleFonts.mPlus1(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 252, 252, 252)),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Connections will follow in time.',
+                      style: GoogleFonts.mPlus1(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 233, 245, 255)),
+                      textAlign: TextAlign.center,
+                    )
+                  ],
                 ),
               ),
             ],

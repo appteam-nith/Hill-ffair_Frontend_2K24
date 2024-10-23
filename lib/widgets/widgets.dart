@@ -11,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hillfair/global_variables.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void dialogBox(BuildContext context) {
   TextEditingController emailforgotController = TextEditingController();
@@ -245,10 +246,14 @@ Widget buildTextField({
   );
 }
 
-Widget customButton(String label, VoidCallback onPressed) {
+Widget customButton(
+  double width,
+  String label,
+  VoidCallback onPressed,
+) {
   return SizedBox(
       height: 60,
-      width: 360,
+      width: width,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -265,7 +270,7 @@ Widget customButton(String label, VoidCallback onPressed) {
             child: Text(
               label,
               style: GoogleFonts.inriaSans(
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: const Color.fromARGB(255, 247, 245, 245),
                 fontWeight: FontWeight.w700,
                 fontSize: 25,
               ),
@@ -295,19 +300,19 @@ Widget customText2(String title) {
       ));
 }
 
-Widget customButton2(String label, Future<String> Function() logoutUser) {
+Widget customButton2(String label, VoidCallback callBack) {
   return SizedBox(
       height: 55,
       width: 360,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: callBack,
         style: ElevatedButton.styleFrom(
           side: BorderSide(
-            color: Color.fromARGB(255, 62, 55, 48),
+            color: Color.fromARGB(255, 165, 149, 149),
             width: 1,
           ),
           elevation: 20,
-          backgroundColor: Color.fromARGB(255, 36, 36, 36),
+          backgroundColor: Color.fromARGB(255, 105, 93, 93),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -315,10 +320,10 @@ Widget customButton2(String label, Future<String> Function() logoutUser) {
         child: Center(
           child: Text(
             label,
-            style: GoogleFonts.inriaSans(
+            style: GoogleFonts.roboto(
               color: const Color.fromARGB(255, 213, 208, 208),
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              fontSize: 25,
             ),
           ),
         ),
@@ -345,10 +350,10 @@ Widget customButton3(String label, Future? Function() param1) {
         child: Center(
           child: Text(
             label,
-            style: GoogleFonts.inriaSans(
+            style: GoogleFonts.roboto(
               color: const Color.fromARGB(255, 213, 208, 208),
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              fontSize: 25,
             ),
           ),
         ),
@@ -512,4 +517,39 @@ Widget option(VoidCallback ontap, double? width) {
       ),
     ),
   );
+}
+
+class IconLinkWidget extends StatelessWidget {
+  final IconData iconData; // Icon to display
+  final String url; // URL to open
+  final double size; // Optional size for the icon
+  final Color color; // Optional color for the icon
+
+  const IconLinkWidget({
+    Key? key,
+    required this.iconData,
+    required this.url,
+    this.size = 30.0, // Default size
+    this.color = Colors.blue, // Default color
+  }) : super(key: key);
+
+  // Function to open the URL
+  Future<void> _launchURL() async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: _launchURL, // Launch the URL when tapped
+      child: Icon(
+        iconData,
+        size: size,
+        color: color,
+      ),
+    );
+  }
 }

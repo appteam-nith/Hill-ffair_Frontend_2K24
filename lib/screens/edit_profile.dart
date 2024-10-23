@@ -1,14 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hillfair/home.dart';
+import 'package:hillfair/screens/home_page.dart';
+import 'package:hillfair/screens/login_screen.dart';
+import 'package:hillfair/widgets/custom_route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class EditProfilePage extends StatefulWidget {
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  EditProfilePageState createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
   File? _image; // To store the selected image file
   final ImagePicker _picker = ImagePicker();
   TextEditingController firstNameController = TextEditingController();
@@ -19,9 +26,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     // Initialize with some default values, you can fetch actual data from backend
-    firstNameController.text = "Sabrina";
-    lastNameController.text = "Aryan";
-    usernameController.text = "@Sabrina";
+    setInitialValues(context);
+  }
+
+  void setInitialValues(BuildContext context) async {
+    String? fetchedMongoDbUserId = await firebaseId.getMongoDbUserId();
+    String? fetchedEmail = await firebaseId.getEmail();
+    String? fetchedUsername = await firebaseId.getUsername();
+
+    firstNameController.text = fetchedUsername!;
+    lastNameController.text = "";
+    usernameController.text = fetchedEmail!;
   }
 
   // Function to pick image from gallery
@@ -45,9 +60,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: Text(
           'Edit Profile',
           style: GoogleFonts.inriaSans(fontSize: 25),
-        
         ),
-        
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenwidth * 0.08),
@@ -118,28 +131,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
             // Save Button
 
             Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenheight * 0.02,
-                horizontal: screenwidth * 0.25,
-              ),
-              child: Container(
-                height: screenheight * 0.05,
-                width: screenwidth * 0.5,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(screenwidth * 0.03),
-                  color: Color(0xFF124A7D),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenheight * 0.02,
+                  horizontal: screenwidth * 0.25,
                 ),
-                child: Center(
-                  child: Text(
-                    'Save settings',
-                    style: TextStyle(
-                      fontSize: screenwidth * 0.045,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            )
+                child: Container(
+                    height: screenheight * 0.05,
+                    width: screenwidth * 0.5,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(screenwidth * 0.03),
+                      color: Color(0xFF124A7D),
+                    )))
           ],
         ),
       ),

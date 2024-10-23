@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hillfair/home.dart';
+import 'package:hillfair/screens/chat_page.dart';
+
 import 'package:hillfair/screens/edit_profile.dart';
 import 'package:hillfair/screens/models.dart';
 import 'package:hillfair/screens/quiz_page.dart';
+import 'package:hillfair/screens/time_screen.dart';
 
 import 'package:hillfair/widgets/events.dart';
 import 'package:hillfair/screens/home_page.dart';

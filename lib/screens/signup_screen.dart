@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hillfair/auth.dart';
 import 'package:hillfair/global_variables.dart';
 import 'package:hillfair/screens/login_screen.dart';
+import 'package:hillfair/screens/privacyPolicy.dart';
 import 'package:hillfair/screens/verify_email_screen.dart';
 import 'package:hillfair/widgets/custom_route.dart';
 import 'package:hillfair/widgets/snack_bar.dart';
@@ -137,9 +138,14 @@ class _SignupScreenState extends State<SignupScreen> {
       gender: selectedGender,
       DOB: selectedDate,
     );
+    setState(() {
+      isLoading = false;
+      // Stop loading
+    });
 
     if (res == "success") {
-      // getCurrentUserUid(); // Get the UID from Firebase
+      Navigator.pushReplacement(context, createFadeRoute(MainPage()));
+
       setState(() {
         uid = FirebaseAuth.instance.currentUser!.uid;
       });
@@ -155,8 +161,6 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       await newUser.sendData(); // Send data after Firebase sign-up
-      Navigator.pushReplacement(context, createFadeRoute(MainPage()));
-      print(res);
     } else {
       showSnackBar(context, "User Already Exists...");
     }
@@ -339,7 +343,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context, createFadeRoute(LegalPrivacyPage()));
+                  },
                   child: Text(
                     ' Terms and Privacy Policy',
                     style: TextStyle(
@@ -353,11 +360,11 @@ class _SignupScreenState extends State<SignupScreen> {
               ],
             ),
             SizedBox(height: 30),
-            customButton("Sign Up", () {
+            customButton(screenSize.width * 0.90, "Sign Up", () {
               if (formKey2.currentState!.validate()) {
                 if (selectedDate != null && selectedGender != null) {
                   if (isChecked) {
-                    signupUser(); // Triggers Firebase registration
+                    signupUser();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -376,7 +383,10 @@ class _SignupScreenState extends State<SignupScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Already have an account?"),
+                Text(
+                  "Already have an account?",
+                  style: GoogleFonts.inriaSans(fontSize: 20),
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(
@@ -384,10 +394,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                   child: Text(
                     " Login",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 9, 14, 157),
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: GoogleFonts.inriaSans(
+                        color: Color.fromARGB(255, 9, 14, 157),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
                   ),
                 ),
               ],

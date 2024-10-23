@@ -1,7 +1,11 @@
-import 'dart:async'; // For the Timer
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:hillfair/auth.dart';
 import 'package:hillfair/screens/login_screen.dart';
-import 'package:hillfair/screens/quiz_page.dart'; // Ensure you import your firebaseId class
+import 'package:hillfair/screens/mesage_page_list.dart';
+import 'package:hillfair/screens/quiz_page.dart';
+import 'package:hillfair/widgets/custom_route.dart';
 
 class MatchPage extends StatefulWidget {
   const MatchPage({super.key});
@@ -11,33 +15,56 @@ class MatchPage extends StatefulWidget {
 }
 
 class _MatchPageState extends State<MatchPage> {
+  String? QuizStatus;
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
+    _initData();
+  }
 
-    // Use Timer to navigate to QuizPage after 3 seconds
-    Timer(const Duration(seconds: 3), () {
-      navigateToQuizPage(context); // Pass the current context
+  Future<void> _initData() async {
+    await checkQuizStatus(); // Ensure quiz status is checked before navigation
+    String? fetchedMongoDbId = await firebaseId.getMongoDbUserId();
+
+    // Store the Timer instance so it can be cancelled in dispose
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) {
+        // Ensure the widget is still in the widget tree
+        if (QuizStatus == 'submitted') {
+          Navigator.push(
+            context,
+            createFadeRoute(MessageListPage()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            createFadeRoute(QuizPage(
+              userId: fetchedMongoDbId!,
+            )),
+          );
+        }
+      }
     });
   }
 
-  // Navigate to QuizPage after retrieving the MongoDB user ID
-  void navigateToQuizPage(BuildContext context) async {
-    String? mongoDbUserId = await firebaseId.getMongoDbUserId();
-
-    if (mongoDbUserId != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => QuizPage(userId: mongoDbUserId)
-
-            // Pass the user ID here
-            ),
-      );
-      print('$mongoDbUserId');
-    } else {
-      // Handle the case where the user ID is null (e.g., show an error)
-      print('MongoDB User ID is not available.');
+  Future<void> checkQuizStatus() async {
+    String? status =
+        await getQuizStatus(); // Assuming this fetches from Firestore
+    if (mounted) {
+      // Check if the widget is still in the widget tree
+      setState(() {
+        QuizStatus = status;
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    // Cancel the timer when the widget is disposed to prevent memory leaks
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override

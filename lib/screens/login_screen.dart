@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ import 'package:hillfair/widgets/snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // FirebaseId class to handle UID and API request
+
+
+
 
 class firebaseId {
   String? firebaseUID;
@@ -87,6 +91,21 @@ class firebaseId {
   static Future<String?> getMongoDbUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('mongoDbUserId');
+  }
+
+  static Future<String?> getEmail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email');
+  }
+
+  static Future<String?> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username');
+  }
+
+  static Future<String?> getGender() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('gender');
   }
 }
 
@@ -233,6 +252,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 30),
               customButton(
+                MediaQuery.of(context).size.width * 0.9,
                 "Sign In",
                 () {
                   if (formKey1.currentState!.validate()) {
