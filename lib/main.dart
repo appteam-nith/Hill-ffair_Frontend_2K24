@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Hill_fair',
         theme: ThemeData(primarySwatch: Colors.brown),
         home: MainPage());
   }

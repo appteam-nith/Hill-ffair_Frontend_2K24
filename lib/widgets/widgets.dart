@@ -68,7 +68,7 @@ void dialogBox(BuildContext context) {
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(
-                          Color.fromARGB(255, 255, 255, 255)),
+                         Colors.white),
                     ),
                     child: const Text(
                       "Cancel",

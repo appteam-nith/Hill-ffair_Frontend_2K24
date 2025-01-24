@@ -7,7 +7,7 @@ import 'package:hillfair/screens/verify_email_screen.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
-
+// main page
   @override
   Widget build(BuildContext context) {
     return Scaffold(
