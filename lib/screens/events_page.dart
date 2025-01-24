@@ -10,6 +10,8 @@ class EventPage extends StatefulWidget {
   State<EventPage> createState() => _EventPageState();
 }
 
+// event page
+
 class _EventPageState extends State<EventPage> {
   // Lists to store event data
   List<String> urls = [];

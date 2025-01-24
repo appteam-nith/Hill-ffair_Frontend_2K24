@@ -55,7 +55,7 @@ class _HomeState extends State<Home> {
                   Colors.transparent, // Make background transparent
               color: Color(0xffF3CBB6), // Navigation bar color
               buttonBackgroundColor:
-                  const Color.fromARGB(255, 255, 255, 255), // Button color
+                  Colors.white, // Button color
               onTap: _onItemTapped,
               height: 60,
               animationCurve: Curves.fastEaseInToSlowEaseOut,

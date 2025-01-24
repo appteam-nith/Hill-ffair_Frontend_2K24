@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class LegalPrivacyPage extends StatelessWidget {
   const LegalPrivacyPage({super.key});
-
+// privacy
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -34,7 +34,7 @@ class HelpSupport extends StatelessWidget {
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 21,
-                  color: Color.fromARGB(255, 7, 74, 129)),
+                  color:Colors.blueAccent),
             ),
             SizedBox(
               height: 10,

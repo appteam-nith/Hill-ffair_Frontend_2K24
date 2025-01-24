@@ -68,7 +68,7 @@ class _EventsState extends State<Events> {
               highlightColor: Colors.grey[100]!,
               child: Container(
                 width: size.width,
-                height: 270,
+                height: 271,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -85,7 +85,7 @@ class _EventsState extends State<Events> {
                     "Events",
                     style: GoogleFonts.roboto(
                       fontWeight: FontWeight.bold,
-                      fontSize: 25,
+                      fontSize: 24,
                     ),
                   ),
                   IconButton(

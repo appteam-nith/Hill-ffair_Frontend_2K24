@@ -59,7 +59,7 @@ class _CarouselState extends State<Carousel> {
                 highlightColor: Colors.grey[100]!,
                 child: Container(
                   width: size.width * 0.9,
-                  height: 270,
+                  height: 271,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
